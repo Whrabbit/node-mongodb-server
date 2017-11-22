@@ -16,7 +16,9 @@ routes.get('/users', function(req, res) {
             // console.log(users);
             res.status(200).json(users);
         })
-        .catch((error) => res.status(401).json(error));
+        .catch(() => {
+            res.status(404).json({'error' : 'bad request'});
+        })
 });
 
 //
@@ -24,6 +26,15 @@ routes.get('/users', function(req, res) {
 // Vorm van de URL: http://hostname:3000/api/v1/users/23
 //
 routes.get('/users/:id', function(req, res) {
+    res.contentType('application/json');
+    let userId = req.params.id;
+    User.findOne({name: userId})
+        .then((user) => {
+            res.status(200).json(user);
+        })
+        .catch(() => {
+            res.status(404).json({'error' : 'bad request'});
+        })
 
 });
 
@@ -32,7 +43,15 @@ routes.get('/users/:id', function(req, res) {
 // Vorm van de URL: POST http://hostname:3000/api/v1/users
 //
 routes.post('/users', function(req, res) {
-
+    res.contentType('application/json');
+    let user = new User(req.body);
+    user.save()
+        .then(() => {
+            res.status(200).json(user);
+        })
+        .catch(() => {
+            res.status(404).json({'error' : 'bad request'});
+        })
 });
 
 //
@@ -43,7 +62,17 @@ routes.post('/users', function(req, res) {
 // Vorm van de URL: PUT http://hostname:3000/api/v1/users/23
 //
 routes.put('/users/:id', function(req, res) {
-
+    res.contentType('application/json');
+    let user = new User(req.body);
+    // User.findByIdAndUpdate({_id: user._id}, {name: user.name})
+    User.findByIdAndUpdate({_id: user._id}, {name: user.name})
+        .then((user) => {
+            res.status(200).json(user);
+            res.redirect('../');
+        })
+        .catch(() => {
+            res.status(404).json({'error' : 'bad request'})
+        })
 });
 
 //
@@ -54,7 +83,16 @@ routes.put('/users/:id', function(req, res) {
 // Vorm van de URL: DELETE http://hostname:3000/api/v1/users/23
 //
 routes.delete('/users/:id', function(req, res) {
+    res.contentType('application/json');
+    let userId = req.params.id;
+    User.findOneAndRemove({name: userId})
+        .then(() => {
+            res.status(200).json({'id': userId});
+        })
 
+        .catch(() => {
+            res.status(404).json({'error' : 'bad request'})
+        })
 });
 
 module.exports = routes;
