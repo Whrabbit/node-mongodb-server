@@ -2,7 +2,19 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-    name: String
+    name: {
+        type: String,
+        required: true
+    },
+    title: String,
+    recipes: [{
+        recipeName: String,
+        time: String,
+        ingedrients: [{
+            ingredientName: String,
+            amount: Number
+        }]
+    }]
 }, {
     timestamps: true
 });

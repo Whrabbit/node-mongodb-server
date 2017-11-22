@@ -28,7 +28,7 @@ routes.get('/users', function(req, res) {
 routes.get('/users/:id', function(req, res) {
     res.contentType('application/json');
     let userId = req.params.id;
-    User.findOne({name: userId})
+    User.findOne({_id: userId})
         .then((user) => {
             res.status(200).json(user);
         })
@@ -63,12 +63,12 @@ routes.post('/users', function(req, res) {
 //
 routes.put('/users/:id', function(req, res) {
     res.contentType('application/json');
-    let user = new User(req.body);
-    // User.findByIdAndUpdate({_id: user._id}, {name: user.name})
-    User.findByIdAndUpdate({_id: user._id}, {name: user.name})
+    let userId = req.params.id;
+    let user = req.body;
+    User.findByIdAndUpdate(userId, {name: user.name})
         .then((user) => {
+            User.findById(userId)
             res.status(200).json(user);
-            res.redirect('../');
         })
         .catch(() => {
             res.status(404).json({'error' : 'bad request'})
